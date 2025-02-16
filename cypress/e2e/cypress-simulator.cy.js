@@ -107,7 +107,7 @@ describe('Cypress simulator', () => {
 
   });
 
-  it.only('Show and hide logout button', () => {
+  it('Show and hide logout button', () => {
     cy.get('#sandwich-menu').click()
     cy.get('#logoutButton').should('be.visible')
 
@@ -116,7 +116,7 @@ describe('Cypress simulator', () => {
   });
 
   it('Running... state', () => {
-
+    //cy.get()
   });
 
   it('Accept cookies', () => {
