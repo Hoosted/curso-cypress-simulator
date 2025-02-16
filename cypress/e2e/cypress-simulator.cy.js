@@ -136,14 +136,6 @@ describe('Cypress simulator', () => {
       .and('be.visible')
   });
 
-  it('Accept cookies', () => {
-
-  });
-
-  it('Decline cookies', () => {
-
-  });
-
   it('Captcha button states', () => {
 
   });
@@ -172,3 +164,62 @@ describe('Cypress simulator', () => {
 
   });
 })
+
+describe('Cypress simulator - Cookies consent', () => {
+  beforeEach(() => {
+    cy.visit('./src/index.html?skipCaptcha=true')
+    cy.contains('button', 'Login').click()
+  });
+
+  it('consents on the cookies usage', () => {
+    cy.get('#cookieConsent')
+      .as('cookieConsentBanner')
+      .find('button:contains("Accept")')
+      .click()
+
+    cy.get('@cookieConsentBanner').should('not.be.visible')
+    cy.window()
+      .its('localStorage.cookieConsent')
+      .should('be.equal', 'accepted')
+  });
+
+  it('it declines on the cookies usage', () => {
+    cy.get('#cookieConsent')
+      .as('cookieConsentBanner')
+      .find('button:contains("Decline")')
+      .click()
+
+    cy.get('@cookieConsentBanner').should('not.be.visible')
+    cy.window()
+      .its('localStorage.cookieConsent')
+      .should('be.equal', 'declined')
+  });
+
+});
+
+describe.only('Cypress simulator - Captcha', () => {
+  beforeEach(() => {
+    cy.visit('./src/index.html')
+    cy.contains('button', 'Login').click()
+  });
+
+  it('disables the captcha verify button when no answer is provided or its cleared', () => {
+    cy.get('#verifyCaptcha').should('be.disabled')
+
+    cy.get('#captchaInput').type('5')
+    cy.get('#verifyCaptcha').should('be.enabled')
+
+    cy.get('#captchaInput').clear()
+    cy.get('#verifyCaptcha').should('be.disabled')
+  });
+
+  it('shows an error on a wrong captcha answer and goes back to its initial state', () => {
+    cy.get('#captchaInput').type('100000000000')
+    cy.get('#verifyCaptcha').click()
+
+    cy.get('#captchaError').should('be.visible')
+      .and('contain', 'Incorrect answer, please try again.')
+    cy.get('#captchaInput').should('have.value', '')
+    cy.get('#verifyCaptcha').should('be.disabled')
+  });
+});
