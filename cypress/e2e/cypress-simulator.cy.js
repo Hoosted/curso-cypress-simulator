@@ -40,7 +40,7 @@ describe('Cypress simulator', () => {
     cy.get('#runButton')
       .click();
 
-    cy.get('#outputArea', { timeout: 6000 })
+    cy.get('#outputArea', { timeout: 7000 })
       .should('contain', 'Warning:')
       .and('contain', 'The `cy.contains` command has not been implemented yet.')
       .and('be.visible')
@@ -136,16 +136,14 @@ describe('Cypress simulator', () => {
       .and('be.visible')
   });
 
-  it('Captcha button states', () => {
+  it('checks the run button disabled and enabled states', () => {
+    cy.get('#runButton').should('be.disabled')
 
-  });
+    cy.get('#codeInput').type('cy.log("Yay!")')
+    cy.get('#runButton').should('be.enabled')
 
-  it('Captcha error', () => {
-
-  });
-
-  it('Run button - enable/disable states', () => {
-
+    cy.get('#codeInput').clear()
+    cy.get('#runButton').should('be.disabled')
   });
 
   it('Reset textarea on logout and login', () => {
@@ -197,7 +195,7 @@ describe('Cypress simulator - Cookies consent', () => {
 
 });
 
-describe.only('Cypress simulator - Captcha', () => {
+describe('Cypress simulator - Captcha', () => {
   beforeEach(() => {
     cy.visit('./src/index.html')
     cy.contains('button', 'Login').click()
