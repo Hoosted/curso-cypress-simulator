@@ -71,12 +71,15 @@ describe('Cypress simulator', () => {
       .and('contain', 'For more commands and details, visit the official Cypress API documentation.')
       .and('be.visible')
 
-    cy.contains('#outpuArea a', 'official Cypress API documentation')
-      .should('have.attr', 'href', 'https://docs.cypress.io/api/table-of-contents')
+    cy.get('#outputArea')
+      .find('a')
+      .should('contain', 'official Cypress API documentation')
+      .and('have.attr', 'href', 'https://docs.cypress.io/api/table-of-contents')
       .and('have.attr', 'target', '_blank')
       .and('have.attr', 'rel', 'noopener noreferrer')
       .and('be.visible')
   });
+
 
   it('maximizes and minimizes a simulation results', () => {
     cy.get('#codeInput')
@@ -115,8 +118,22 @@ describe('Cypress simulator', () => {
     cy.get('#logoutButton').should('not.be.visible')
   });
 
-  it('Running... state', () => {
-    //cy.get()
+  it('shows the running state before showing the final result', () => {
+    cy.get('#codeInput')
+      .type('cy.log("Yay!")')
+    cy.get('#runButton')
+      .click();
+
+    cy.get('.loading').should('be.visible')
+    cy.get('#outputArea').should('contain', 'Running... Please wait.')
+      .and('be.visible')
+
+    cy.get('.loading', { timeout: 6000 }).should('not.exist')
+
+    cy.get('#outputArea')
+      .should('contain', 'Success:')
+      .and('contain', 'cy.log("Yay!") // Logged message "Yay!"')
+      .and('be.visible')
   });
 
   it('Accept cookies', () => {
