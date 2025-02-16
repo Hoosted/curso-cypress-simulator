@@ -71,12 +71,15 @@ describe('Cypress simulator', () => {
       .and('contain', 'For more commands and details, visit the official Cypress API documentation.')
       .and('be.visible')
 
-    cy.contains('#outpuArea a', 'official Cypress API documentation')
-      .should('have.attr', 'href', 'https://docs.cypress.io/api/table-of-contents')
+    cy.get('#outputArea')
+      .find('a')
+      .should('contain', 'official Cypress API documentation')
+      .and('have.attr', 'href', 'https://docs.cypress.io/api/table-of-contents')
       .and('have.attr', 'target', '_blank')
       .and('have.attr', 'rel', 'noopener noreferrer')
       .and('be.visible')
   });
+
 
   it('maximizes and minimizes a simulation results', () => {
     cy.get('#codeInput')
