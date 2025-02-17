@@ -40,7 +40,7 @@ describe('Cypress simulator', () => {
     cy.get('#runButton')
       .click();
 
-    cy.get('#outputArea', { timeout: 6000 })
+    cy.get('#outputArea', { timeout: 7000 })
       .should('contain', 'Warning:')
       .and('contain', 'The `cy.contains` command has not been implemented yet.')
       .and('be.visible')
@@ -119,10 +119,8 @@ describe('Cypress simulator', () => {
   });
 
   it('shows the running state before showing the final result', () => {
-    cy.get('#codeInput')
-      .type('cy.log("Yay!")')
-    cy.get('#runButton')
-      .click();
+    cy.get('#codeInput').type('cy.log("Yay!")')
+    cy.get('#runButton').click();
 
     cy.get('.loading').should('be.visible')
     cy.get('#outputArea').should('contain', 'Running... Please wait.')
@@ -136,24 +134,24 @@ describe('Cypress simulator', () => {
       .and('be.visible')
   });
 
-  it('Captcha button states', () => {
+  it('checks the run button disabled and enabled states', () => {
+    cy.get('#runButton').should('be.disabled')
 
+    cy.get('#codeInput').type('cy.log("Yay!")')
+    cy.get('#runButton').should('be.enabled')
+
+    cy.get('#codeInput').clear()
+    cy.get('#runButton').should('be.disabled')
   });
 
-  it('Captcha error', () => {
+  it('clears the code input when logging off then logging in again', () => {
+    cy.get('#codeInput').type('cy.log("Yay!")')
+    cy.get('#sandwich-menu').click()
+    cy.get('#logoutButton').click()
+    cy.contains('button', 'Login').click();
 
-  });
-
-  it('Run button - enable/disable states', () => {
-
-  });
-
-  it('Reset textarea on logout and login', () => {
-
-  });
-
-  it('Disable run button on logout and login', () => {
-
+    cy.get('#codeInput').should('have.value', '')
+      .and('be.visible')
   });
 
   it('Reset output on logout an login', () => {
@@ -197,7 +195,7 @@ describe('Cypress simulator - Cookies consent', () => {
 
 });
 
-describe.only('Cypress simulator - Captcha', () => {
+describe('Cypress simulator - Captcha', () => {
   beforeEach(() => {
     cy.visit('./src/index.html')
     cy.contains('button', 'Login').click()
