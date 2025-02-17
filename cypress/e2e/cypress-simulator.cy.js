@@ -154,12 +154,41 @@ describe('Cypress simulator', () => {
       .and('be.visible')
   });
 
-  it('Reset output on logout an login', () => {
+  it('disables the run button when logging off then logging in again', () => {
+    cy.get('#codeInput').type('cy.log("Yay!")')
+    cy.get('#sandwich-menu').click()
+    cy.get('#logoutButton').click()
+    cy.contains('button', 'Login').click();
 
+    cy.get('#codeInput').should('have.value', '')
+    cy.get('#runButton').should('be.disabled')
+      .and('be.visible')
   });
 
-  it('No cookings banner on the login page', () => {
+  it('clears the code output when logging off then logging in again', () => {
+    cy.get('#codeInput').type('cy.log("Yay!")')
+    cy.get('#runButton').click();
 
+    cy.get('#outputArea', { timeout: 6000 })
+      .should('contain', 'Success:')
+      .and('contain', 'cy.log("Yay!") // Logged message "Yay!"')
+      .and('be.visible')
+
+    cy.get('#sandwich-menu').click()
+    cy.get('#logoutButton').click()
+    cy.contains('button', 'Login').click();
+
+    cy.get('#outputArea').should('have.value', '')
+      .and('not.contain', 'cy.log("Yay!")')
+  });
+
+  it('doesnt show the cookie consent banner on the login page', () => {
+    cy.clearAllLocalStorage()
+
+    cy.reload()
+
+    cy.contains('button', 'Login').should('be.visible')
+    cy.get('#cookieConsent').should('not.be.visible')
   });
 })
 
