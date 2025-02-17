@@ -119,10 +119,8 @@ describe('Cypress simulator', () => {
   });
 
   it('shows the running state before showing the final result', () => {
-    cy.get('#codeInput')
-      .type('cy.log("Yay!")')
-    cy.get('#runButton')
-      .click();
+    cy.get('#codeInput').type('cy.log("Yay!")')
+    cy.get('#runButton').click();
 
     cy.get('.loading').should('be.visible')
     cy.get('#outputArea').should('contain', 'Running... Please wait.')
@@ -146,12 +144,14 @@ describe('Cypress simulator', () => {
     cy.get('#runButton').should('be.disabled')
   });
 
-  it('Reset textarea on logout and login', () => {
+  it('clears the code input when logging off then logging in again', () => {
+    cy.get('#codeInput').type('cy.log("Yay!")')
+    cy.get('#sandwich-menu').click()
+    cy.get('#logoutButton').click()
+    cy.contains('button', 'Login').click();
 
-  });
-
-  it('Disable run button on logout and login', () => {
-
+    cy.get('#codeInput').should('have.value', '')
+      .and('be.visible')
   });
 
   it('Reset output on logout an login', () => {
