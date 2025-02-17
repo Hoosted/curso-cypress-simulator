@@ -165,8 +165,21 @@ describe('Cypress simulator', () => {
       .and('be.visible')
   });
 
-  it('Reset output on logout an login', () => {
+  it('clears the code output when logging off then logging in again', () => {
+    cy.get('#codeInput').type('cy.log("Yay!")')
+    cy.get('#runButton').click();
 
+    cy.get('#outputArea', { timeout: 6000 })
+      .should('contain', 'Success:')
+      .and('contain', 'cy.log("Yay!") // Logged message "Yay!"')
+      .and('be.visible')
+
+    cy.get('#sandwich-menu').click()
+    cy.get('#logoutButton').click()
+    cy.contains('button', 'Login').click();
+
+    cy.get('#outputArea').should('have.value', '')
+      .and('not.contain', 'cy.log("Yay!")')
   });
 
   it('No cookings banner on the login page', () => {
