@@ -154,6 +154,17 @@ describe('Cypress simulator', () => {
       .and('be.visible')
   });
 
+  it('disables the run button when logging off then logging in again', () => {
+    cy.get('#codeInput').type('cy.log("Yay!")')
+    cy.get('#sandwich-menu').click()
+    cy.get('#logoutButton').click()
+    cy.contains('button', 'Login').click();
+
+    cy.get('#codeInput').should('have.value', '')
+    cy.get('#runButton').should('be.disabled')
+      .and('be.visible')
+  });
+
   it('Reset output on logout an login', () => {
 
   });
